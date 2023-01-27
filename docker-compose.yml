@@ -3,7 +3,7 @@ services:
   # Creates an InfluxDB instance to store the
   # speed test results
   influxdb:
-    image: influxdb
+    image: influxdb:latest
     restart: always
     volumes:
       - influxdb:/var/lib/influxdb
