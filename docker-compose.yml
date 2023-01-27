@@ -1,14 +1,12 @@
 version: '3'
 services:
-  runtime:
-    container_name: runtime
-    build: ./runtime
-    restart: always
 
   # Displays the results in a Grafana dashborad
   grafana:
     image: grafana/grafana:latest
     restart: always
+    depends_on:
+      - influxdb
     ports:
       - 3000:3000
     volumes:
@@ -16,4 +14,3 @@ services:
 
 volumes:
   grafana:
-  influxdb:
