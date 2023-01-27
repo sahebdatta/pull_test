@@ -1,14 +1,9 @@
 version: '3'
 services:
-  # Creates an InfluxDB instance to store the
-  # speed test results
-  influxdb:
-    image: influxdb:1.8.10
+  runtime:
+    container_name: runtime
+    build: ./runtime
     restart: always
-    volumes:
-      - influxdb:/var/lib/influxdb
-    ports:
-      - "8086:8086"
 
   # Displays the results in a Grafana dashborad
   grafana:
