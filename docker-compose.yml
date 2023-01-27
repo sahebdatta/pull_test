@@ -1,0 +1,15 @@
+version: '3'
+services:
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    depends_on:
+      - influxdb
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+
+volumes:
+  grafana:
