@@ -5,7 +5,7 @@ services:
     container_name: runtime
     environment:
       - MQTT_BROKER=192.168.29.44
-      - USER_ID=456
+      - USER_ID=789
     restart: always
     volumes:
       - runtime:/var/lib/runtime
