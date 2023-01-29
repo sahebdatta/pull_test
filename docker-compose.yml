@@ -1,7 +1,8 @@
 version: '3'
 services:
   runtime:
-    image: sahebdatta/runtime:v_0.1.0
+    image: sahebdatta/runtime:v_0.1.1
+    container_name: runtime
     restart: always
     volumes:
       - runtime:/var/lib/runtime
@@ -9,6 +10,7 @@ services:
   # Displays the results in a Grafana dashborad
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     restart: always
     ports:
       - 3000:3000
