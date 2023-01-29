@@ -6,8 +6,8 @@ import json
 import os
 import psutil
 
-mqtt_broker = os.environ.get('MQTT_BROKER', '192.168.29.44')
-user_id = os.environ.get('USER_ID', 123)
+mqtt_broker = os.environ.get('MQTT_BROKER', 'localhost')
+user_id = str(os.environ.get('USER_ID', 123))
 
 mqtt_port = 1883
 
@@ -17,7 +17,7 @@ system_type = "arm"
 os_name = "Linux"
 timezone = "UTC+05:30"
 
-global start_heartbeat, heartbeat_time
+global start_heartbeat, heartbeat_time, heartbeat_count
 
 prev_time_doing_things = prev_time_doing_nothing = 0
 
@@ -44,14 +44,23 @@ def mqtt_pub(topic, msg):
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
-        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        status()
+        # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        if msg.topic == "active_users":
+            if (user_id in msg.payload.decode()):
+                active_users(msg.payload.decode())
 
-    client.subscribe("status")
+    client.subscribe("active_users")
     client.on_message = on_message
 
 def client_loop(client):
     client.loop_forever()
+
+def active_users(payload):
+    global heartbeat_count
+    heartbeat_count = 0
+    users = payload
+    # print(users)
+
 
 def status():
     global start_heartbeat, heartbeat_time
@@ -98,7 +107,7 @@ def heartbeat(user_ID, device_id):
     mqtt_pub(str(user_ID)+"/heartbeat", json.dumps(json_str))
 
 def run(user_ID):
-    global start_heartbeat, heartbeat_time, client
+    global start_heartbeat, heartbeat_time, heartbeat_count, client
 
     client = connect_mqtt()
     subscribe(client)
@@ -113,7 +122,7 @@ def run(user_ID):
             if start_heartbeat:
                 heartbeat_count = 0
                 start_heartbeat = False
-            if heartbeat_count < 12 and (time.time() - heartbeat_time) > 5:
+            if heartbeat_count < 4 and (time.time() - heartbeat_time) > 5:
                 heartbeat(user_ID, device_id)
                 heartbeat_count += 1
                 heartbeat_time = time.time()
