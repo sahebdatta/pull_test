@@ -7,7 +7,7 @@ import os
 import core_temp
 # import psutil
 
-mqtt_broker = "192.168.20.254"
+mqtt_broker = os.environ.get('MQTT_BROKER', 'localhost')
 mqtt_port = 1883
 
 device_id = 123456789
